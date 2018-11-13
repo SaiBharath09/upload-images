@@ -27,7 +27,7 @@
 //     }
 // }
 if (isset($file_ori_name)) {
-    $errors = array();
+    $errors = '';
     // $file_name = $_FILES['image']['name'];
     // $file_size = $_FILES['image']['size'];
     // $file_tmp = $_FILES['image']['tmp_name'];
@@ -38,7 +38,7 @@ if (isset($file_ori_name)) {
     $source = $temp_file;
     $destination = "images/" . $file_ori_name;
     if (in_array($file_ext, $extensions) === false) {
-        $errors[] = "extension not allowed, please choose a JPEG or PNG file.";
+        $errors .= "extension not allowed, please choose a JPEG or PNG file.";
     }
 
     // if ($file_size > 2097152) {
