@@ -45,7 +45,7 @@ if (isset($_FILES["test_image"]["name"])) {
             $error[] = $file_name;
             $status = "success";
         } else {
-            $error[] = "Sorry, there was an error uploading your file.";
+            $error[] = "Sorry, there was an error uploading your file." . $_FILES["file"]["error"];
         }
     }
 } else {
