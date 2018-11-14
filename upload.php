@@ -1,62 +1,54 @@
 <?php
-// if (isset($_FILES['image'])) {
-//     $errors = array();
-//     $file_name = $_FILES['image']['name'];
-//     // $file_size = $_FILES['image']['size'];
-//     $file_tmp = $_FILES['image']['tmp_name'];
-//     $file_type = $_FILES['image']['type'];
-//     $file_ext = strtolower(end(explode('.', $_FILES['image']['name'])));
-
-//     $extensions = array("jpeg", "jpg", "png", "svg", "gif");
-
-//     if (in_array($file_ext, $extensions) === false) {
-//         $errors[] = "extension not allowed, please choose a JPEG or PNG file.";
-//     }
-
-//     // if ($file_size > 2097152) {
-//     //     $errors[] = 'File size must be excately 2 MB';
-//     // }
-
-//     if (empty($errors) == true) {
-//         move_uploaded_file($file_tmp, "images/" . $file_name);
-//         echo "Success";
-//         $result = array('result' => 'success', 'msg' => 'Success', 'data' => array());
-//     } else {
-//         print_r($errors);
-//         $result = array('result' => 'failure', 'msg' => 'Failed', 'data' => $errors);
-//     }
-// }
-if (isset($file_ori_name)) {
-    $errors = '';
-    // $file_name = $_FILES['image']['name'];
-    // $file_size = $_FILES['image']['size'];
-    // $file_tmp = $_FILES['image']['tmp_name'];
-    // $file_type = $_FILES['image']['type'];
-    $file_ext = strtolower(end(explode('.', $file_ori_name)));
-
-    $extensions = array("jpeg", "jpg", "png", "svg", "gif");
-    $source = $temp_file;
-    $destination = "images/" . $file_ori_name;
-    if (in_array($file_ext, $extensions) === false) {
-        $errors .= "extension not allowed, please choose a JPEG or PNG file.";
-    }
-
-    // if ($file_size > 2097152) {
-    //     $errors[] = 'File size must be excately 2 MB';
-    // }
-
-    if (empty($errors) == true) {
-        if (move_uploaded_file($source, $destination)) {
-            return $destination;
+$base_url = "http://128.199.218.150/";
+$target_dir = "images/";
+$error = array();
+$status = "failure";
+if (isset($_FILES["test_image"]["name"])) {
+    $target_file = $target_dir . basename($_FILES["test_image"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+// Check if image file is a actual image or fake image
+    if (isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["test_image"]["tmp_name"]);
+        if ($check !== false) {
+            $error[] = "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
         } else {
-            return "File upload error";
+            $error[] = "File is not an image.";
+            $uploadOk = 0;
         }
-        // $result = array('result' => 'success', 'msg' => 'Success', 'data' => array());
-    } else {
-        return $errors;
-        // print_r($errors);
-        // $result = array('result' => 'failure', 'msg' => 'Failed', 'data' => $errors);
     }
+// Check if file already exists
+    //    if (file_exists($target_file)) {
+    //        $error[] = "Sorry, file already exists.";
+    //        $uploadOk = 0;
+    //    }
+    // Check file size
+    if ($_FILES["test_image"]["size"] > 500000) {
+        $error[] = "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+// Allow certain file formats
+    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+        $error[] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+// Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        $error[] = "Sorry, your file was not uploaded.";
+// if everything is ok, try to upload file
+    } else {
+        $now = strtotime(DATE("Y-m-d H:i:s"));
+        $name = trim(str_replace(" ", "", $_FILES["test_image"]["name"]));
+        $file_name = $target_dir . rand(99999, 999999) . $now . $name;
+        if (move_uploaded_file($_FILES["test_image"]["tmp_name"], $file_name)) {
+            $error[] = $base_url . $file_name;
+            $status = "success";
+        } else {
+            $error[] = "Sorry, there was an error uploading your file.";
+        }
+    }
+} else {
+    $error[] = "please upload file";
 }
-
-// echo json_encode($result);
+echo json_encode(array("status" => $status, "data" => $error));
