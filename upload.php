@@ -1,6 +1,6 @@
 <?php
 $base_url = "http://128.199.218.150/";
-$target_dir = "images/";
+$target_dir = "upload-images/images/";
 $error = array();
 $status = "failure";
 if (isset($_FILES["test_image"]["name"])) {
