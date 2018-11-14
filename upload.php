@@ -42,7 +42,7 @@ if (isset($_FILES["test_image"]["name"])) {
         $name = trim(str_replace(" ", "", $_FILES["test_image"]["name"]));
         $file_name = $target_dir . rand(99999, 999999) . $now . $name;
         if (move_uploaded_file($_FILES["test_image"]["tmp_name"], $file_name)) {
-            $error[] = $base_url . $file_name;
+            $error[] = $file_name;
             $status = "success";
         } else {
             $error[] = "Sorry, there was an error uploading your file.";
