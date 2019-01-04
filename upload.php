@@ -4,7 +4,7 @@ $target_dir = "images/";
 $error = array();
 $status = "failure";
 foreach ($_FILES as $name => $f) {
-    if (isset($f["name"])) {
+    if (isset($f["name"]) && $f['name'] != '') {
         $target_file = $target_dir . basename($f["name"]);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
